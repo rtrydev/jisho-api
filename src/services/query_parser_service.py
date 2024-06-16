@@ -20,6 +20,11 @@ class QueryParserService:
         tagger = Tagger('-Owakati')
         query_result = tagger(query)
 
+        user_input_matches = {
+            word.feature.lemma: str(word)
+            for word in query_result
+        }
+
         unique_tags = list(
             OrderedDict.fromkeys(
                 word.feature.lemma for word in query_result
@@ -35,6 +40,7 @@ class QueryParserService:
 
         return [
             WordData(
+                user_entry=user_input_matches.get(entry.word),
                 dictionary_entry=entry,
                 example_sentences=self.__example_sentence_repository.get_example_sentences_by_word(entry.word)
             )
