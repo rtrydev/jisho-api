@@ -1,8 +1,23 @@
 import json
+from typing import Dict, List
 from fugashi import Tagger
 
+def get_similarity_index(sentence1, sentence2) -> float:
+    character_overlap = 0
+    characters = len(sentence1) + len(sentence2)
+
+    for character in sentence1:
+        if character in sentence2:
+            character_overlap += 1
+
+    for character in sentence2:
+        if character in sentence1:
+            character_overlap += 1
+
+    return character_overlap / characters
+
 def generate_jap_eng_dict():
-    result = {}
+    result: Dict[str, List[Dict[str, str]]] = {}
 
     with open('./tatoeba-jap-eng.tsv', 'rb') as file:
         lines = list(map(lambda line: line.decode('utf8'), file.readlines()))
@@ -27,7 +42,10 @@ def generate_jap_eng_dict():
             if word not in result:
                 result[word] = []
 
-            if len(result[word]) == 10:
+            if len(result[word]) == 10 or any(
+                get_similarity_index(entry['sentence'], japanese_sentence) > 0.8
+                for entry in result[word]
+            ):
                 continue
 
             result[word].append({
