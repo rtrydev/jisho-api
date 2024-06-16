@@ -24,6 +24,7 @@ class DictionaryController:
             translation=result.dictionary_entry.translation,
             example_sentences=list(map(lambda example: ExampleSentenceReadDTO(
                 sentence=example.sentence,
+                reading_hints=example.reading_hints,
                 translation=example.translation
             ), result.example_sentences))
         ), results))
