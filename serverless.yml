@@ -1,0 +1,51 @@
+service: jisho-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  runtime: python3.12
+  deploymentBucket:
+    name: rtrydev-serverless-deployments-${opt:region}
+  httpApi:
+    cors:
+      allowedOrigins: '*'
+      allowedHeaders:
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+        - X-Amz-User-Agent
+
+resources:
+  extensions:
+    HttpApiStage:
+      Properties:
+        StageName: ${self:provider.stage}
+
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+  - serverless-deployment-bucket
+
+functions:
+  getQuery:
+    image: 188471728597.dkr.ecr.eu-central-1.amazonaws.com/jisho-api-get-query:latest
+    timeout: 29
+    memorySize: 2048
+    events:
+      - httpApi:
+          method: GET
+          path: /
+
+custom:
+  customDomain:
+    http:
+      domainName: api.jisho.rtrydev.com
+      stage: ${self:provider.stage}
+      basePath: 'search'
+      autoDomain: true
+      createRoute53Record: true
+      createRoute53IPv6Record: true
+      endpointType: regional

@@ -1,0 +1,29 @@
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Serverless directories
+.serverless
+
+dict_backup.json
+jap_eng_dict.json
+jap_eng_examples.json
+JMdict
+tatoeba-jap-eng.tsv
+
+node_modules
+venv
